@@ -1,0 +1,26 @@
+<ion-view view-title="Calendar">
+  <ion-content class="padding">
+
+    <div class="card" ng-repeat="event in events">
+      <div class="item item-divider">
+        {{event.event_title}}
+      </div>
+      <div class="item item-text-wrap">
+
+        <br/>
+        <strong>Date:   {{ event.event_date | myDateFormat }}</strong>
+        <div>
+          {{ event.event_address}}<br/>
+          <p>{{ event.event_description }}
+          <p/>
+          <button class="button button-block button-positive" id="calendarBtn" ng-click="createEvent()">
+            Add to Device Calendar
+          </button>
+          </div>
+
+
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>

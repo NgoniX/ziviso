@@ -1,0 +1,27 @@
+/* Empty. Add your own CSS if you like */
+
+.highlighted { background: yellow }
+
+.logo {
+    display: block;
+    position: relative;
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+button.button-calm{
+    width: 30%;
+}
+
+button.button-positive{
+    width: 60.8%;
+}
+
+button#calendarBtn{
+	width: 100%;
+}
+
+button#forgot{
+    width: 60.8%;
+}

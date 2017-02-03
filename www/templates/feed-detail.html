@@ -1,0 +1,25 @@
+<ion-view view-title="{{feed.feed_title}}">
+  <ion-content>
+    <div class="list card">
+
+      <div class="item item-avatar">
+        <img src="img/ziviso.png">
+        <h2>{{feed.client_name}}</h2>
+
+      </div>
+      <div class="item item-image">
+        <!--<img src="img/plain.jpg">-->
+      </div>
+
+      <a class="item item-icon-left assertive">
+        <i class="icon ion-email"></i>
+        Message
+      </a>
+      <div class="item item-text-wrap">
+        <p>{{feed.feed_title}}</p>
+        {{feed.feed_text}}
+      </div>
+
+    </div>
+  </ion-content>
+</ion-view>

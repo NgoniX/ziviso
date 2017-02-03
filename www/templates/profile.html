@@ -1,0 +1,55 @@
+<!-- <script id="my-popover.html" type="text/ng-template">
+  <ion-popover-view>
+
+    <ion-header-bar> <h1 class="title">Share Ziviso</h1>
+    </ion-header-bar>
+    <ion-content> <div class="list">
+
+      <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+          <input type="text" placeholder="Cell Number">
+        </label>
+        <button class="button button-small">
+          OK
+        </button>
+      </div>
+
+    </div>
+    </ion-content>
+  </ion-popover-view>
+
+</script> -->
+
+
+<ion-view view-title="Profile">
+  <ion-content>
+    <div class="list card">
+      <div class="item item-avatar">
+        <img src="img/user.png">
+        <h2>User Name</h2>
+        <p>{{ name }}</p>
+      </div>
+
+      <a ui-sref="app.organizations" class="item item-icon-left">
+        <i class="icon ion-card"></i>
+        My Organizations
+      </a>
+
+      <!--<a href="#" class="item item-icon-left">
+        <i class="icon ion-ios-telephone"></i>
+        +263 777 777 777
+      </a>-->
+
+      <a class="item item-icon-left">
+        <i class="icon ion-email"></i>
+        {{ email }}
+      </a>
+
+      <a ng-click="shareAnywhere()" class="item item-icon-left">
+        <i class="icon ion-share"></i>
+        Invite Friend to Ziviso
+      </a>
+
+    </div>
+  </ion-content>
+</ion-view>

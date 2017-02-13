@@ -12,7 +12,7 @@
       on-refresh="refreshFeed()">
     </ion-refresher>
 
-    <ion-list>
+    <ion-list show-delete="false" can-swipe="true">
       <ion-item ng-repeat="feed in feeds" ng-click="addData(feed.feed_id)" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.feed_id})'>
 
       <img src="img/ziviso.png">
@@ -35,11 +35,15 @@
       </div>
 
       </h2> -->
-
+      
       <p><h3>{{feed.feed_title}}</h3></p>
-      <p>{{feed.feed_text}}</p>
+      <p ng-bind-html="feed.feed_text">{{feed.feed_text}}</p>
       <p><i class="{{feed.feed_type}}"></i></p>
       <i class="icon ion-chevron-right icon-accessory"></i>
+
+      <ion-option-button class="button-assertive" ng-click="delItem($index)">
+            <i class = "icon icon ion-trash-a"></i>
+      </ion-option-button>
 
       </ion-item>
 

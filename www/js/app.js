@@ -16,8 +16,17 @@ var app = angular.module('ziviso', [
   'ionic', 'ziviso.controllers', 'ngStorage', 'ziviso.services', 'ngCordova', 'jett.ionic.filter.bar', 'ngCordovaOauth', 'firebase'
   ]);
 
-app.run(function($ionicPlatform,CONFIG,$state) {
+app.run(function($ionicPlatform,CONFIG,$state, $cordovaBadge) {
   $ionicPlatform.ready(function() {
+
+
+      $cordovaBadge.hasPermission().then(function(result) {
+                $cordovaBadge.set(4);
+                console.log('You have permission, boy');
+            }, function(error) {
+                console.log(error);
+            });
+      //////////////////////////////////
 
         if(window.cordova && window.cordova.plugins.Keyboard) {
             cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);

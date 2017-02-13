@@ -15,7 +15,7 @@
         <i class="icon ion-email"></i>
         Message
       </a>
-      <div class="item item-text-wrap">
+      <div class="item item-text-wrap" ng-bind-html="feed.feed_text">
         <p>{{feed.feed_title}}</p>
         {{feed.feed_text}}
       </div>

@@ -319,6 +319,7 @@ $scope.doSignup = function(userSignup) {
 
         var feed_data = JSON.stringify(data);
 
+         
 
         $log.info('getting data');
         FeedData.initData(data);
@@ -381,6 +382,30 @@ $scope.doSignup = function(userSignup) {
       });
 
     };
+
+
+    //remove list item from localstorage
+    $scope.delItem = function(index){
+
+        $scope.feeds.splice(index, 1);
+
+         // angular.forEach($scope.feeds, function(value, key){
+         
+         //  if(index == value.feed_id){
+
+         //  $scope.feeds.splice($scope.feeds.indexOf(index), 1);
+         //   console.log("Item: " + value.feed_id);
+
+         //  }
+
+         //  });
+
+      
+      // $scope.feeds.splice($scope.feeds.indexOf(index), 1);
+      // console.log('item removed ' + index);
+      // console.log('id of item ' + $scope.feedData);
+    };
+
 
     //click list to update firebase db
     

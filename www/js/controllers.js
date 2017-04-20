@@ -406,6 +406,15 @@ $scope.doSignup = function(userSignup) {
       // console.log('id of item ' + $scope.feedData);
     };
 
+    // remove new badge icon /////////////////////////////////////////
+
+    $scope.delBadge = function(feed_id){
+
+        document.getElementById("newBadge_"+feed_id).style.display="none";
+    };
+
+    /////////////////////////////////////////////////////////////////
+
 
     //click list to update firebase db
     
@@ -432,12 +441,35 @@ $scope.doSignup = function(userSignup) {
       // Set data in firebase
       firebase.database().ref('userInfo/' + $scope.name+'_'+feed_id).set({
       feedID: feed_id,
-      clicked: "yes"
+      clicked: "yes",
+      userEmail: $scope.id
       });
 
       //get feed click data from user node
       return firebase.database().ref('/userInfo/' + $scope.name+'_'+feed_id).once('value').then(function(snapshot) {
       var feedClick = snapshot.val().clicked;
+      var userEmail = snapshot.val().userEmail;
+      var getfeedID = snapshot.val().feedID;
+
+      
+      //check if current user email = email in firebase db, feed paramter = feedID in firebase and clicked flag in firebase = yes
+      if(userEmail === $scope.id && feed_id === getfeedID && feedClick === 'yes'){
+
+        $scope.isClicked = feedClick;
+        $scope.feedDBID = getfeedID;
+
+        $scope.goaway = "Go Away";
+        $log.info(feed_id +'<-->'+ getfeedID);
+        
+      }
+
+      else{
+
+        $scope.goaway = "Do not go";
+        $log.info($scope.id_feed +'<-->'+ getfeedID);
+
+      }
+
       });
 
      }
@@ -528,7 +560,7 @@ if (user !== null) {
 }
     
     $scope.shareAnywhere = function() {
-        $cordovaSocialSharing.share("Download the cool Ziviso App", "Ziviso App", "", "http://portal.ziviso.co.zw");
+        $cordovaSocialSharing.share("Keep in touch with your organization by downloading the Ziviso app", "Ziviso App", "", "http://portal.ziviso.co.zw");
     };
 
   });
@@ -572,9 +604,59 @@ if (user !== null) {
   });
 
 
-  app.controller('OrgDetailCtrl', function ($scope, $stateParams, $log, OrgData) {
+  app.controller('OrgDetailCtrl', function ($scope, $ionicLoading, $stateParams, $http, $log, OrgData, $filter) {
     $log.info('Org Detail Controller Created');
     $scope.org = OrgData.getOrg($stateParams.orgId);
+
+    // insert data into subscribers table when user clicks join org
+
+    // display user info
+    var user = firebase.auth().currentUser;
+
+    var name, email, uid;
+
+      name = user.displayName;
+      email = user.email;
+      uid = user.uid; 
+      var date = new Date();
+      var curdate = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
+ 
+    $scope.joinOrg = function(org_id){
+        var link = 'http://portal.ziviso.co.zw/subscribers/joinOrg';
+        
+        var post_data = {
+          username : name,
+          email : email,
+          curDate: curdate,
+          orgID: org_id
+        };
+
+        $ionicLoading.show({
+               template: 'Please Wait...'
+              });
+
+        $http.post(link, post_data, { 
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+        }).
+        then(function (data, status, headers, config){
+
+          $ionicLoading.hide();
+           alert('You have joined this organization');
+            $log.info('organisation joined yay!');
+            $log.info('Username:'+name+ ' Email:'+email+' Date:'+curdate);
+
+        }, function (data, status, headers, config) {
+        $ionicLoading.hide();
+         $log.info('error: ' + data);
+         $log.info('Username:'+name+ ' Email:'+email+' Date:'+curdate+' orgID:'+org_id);
+        });
+        
+    };
+
+
+
   });
 
 
@@ -648,16 +730,10 @@ if (user !== null) {
 
   });
 
-  ////Date filter//////////////////////////////
-  app.filter('myDateFormat', function myDateFormat($filter){
-  return function(text){
-    var  tempdate= new Date(text.replace(/-/g,"/"));
-    return $filter('date')(tempdate, "dd MMMM yyyy");
-  }
-});
-  //////////////////////////////////////////////////////////
 
   app.controller('EventDetailCtrl', function ($scope, $stateParams, $log, Events) {
     $log.info('Org Detail Controller Created');
     $scope.event = Events.getEvent($stateParams.orgId);
-  })
+  });
+
+

@@ -13,31 +13,19 @@
     </ion-refresher>
 
     <ion-list show-delete="false" can-swipe="true">
-      <ion-item ng-repeat="feed in feeds" ng-click="addData(feed.feed_id)" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.feed_id})'>
+      <ion-item ng-repeat="feed in feeds" ng-click="addData(feed.feed_id); delBadge(feed.feed_id)" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.feed_id})'>
 
       <img src="img/ziviso.png">
 
       <h2>{{feed.client_name}}
 
-      <div>
-        <div id="newBadge" class="badge badge-positive">New</div>
-      </div>
-
+      <div id="newBadge_{{ feed.feed_id }}" class="badge badge-positive">New</div>
+  
       </h2>
-
-      <!-- <h2>{{feed.client_name}}
-      <div ng-if="compareValues(feed.feed_id) == feed.feed_id">
-
-      </div>
-
-      <div ng-if="compareValues(feed.feed_id) !== feed.feed_id">
-        <div id="newBadge" class="badge badge-positive">New</div>
-      </div>
-
-      </h2> -->
       
+
       <p><h3>{{feed.feed_title}}</h3></p>
-      <p ng-bind-html="feed.feed_text">{{feed.feed_text}}</p>
+      <p ng-bind-html="feed.feed_text | cut:true:50:' ...'"></p>
       <p><i class="{{feed.feed_type}}"></i></p>
       <i class="icon ion-chevron-right icon-accessory"></i>
 

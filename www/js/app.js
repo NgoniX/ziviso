@@ -16,8 +16,23 @@ var app = angular.module('ziviso', [
   'ionic', 'ziviso.controllers', 'ngStorage', 'ziviso.services', 'ziviso.filters', 'ngCordova', 'jett.ionic.filter.bar', 'ngCordovaOauth', 'firebase'
   ]);
 
-app.run(function($ionicPlatform,CONFIG,$state, $cordovaBadge) {
+app.run(function($ionicPlatform,CONFIG,$state, $cordovaBadge, $ionicPopup) {
   $ionicPlatform.ready(function() {
+
+     // Check for network connection
+    if(window.Connection) {
+      if(navigator.connection.type == Connection.NONE) {
+        $ionicPopup.confirm({
+          title: 'Network Problem',
+          content: 'Sorry, Please Check Your Network Connection.'
+        })
+        .then(function(result) {
+          if(!result) {
+            navigator.app.exitApp();
+          }
+        });
+      }
+    }
 
       // $cordovaBadge.hasPermission().then(function(result) {
       //           $cordovaBadge.set(4);

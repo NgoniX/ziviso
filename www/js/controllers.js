@@ -643,7 +643,7 @@ if (user !== null) {
         then(function (data, status, headers, config){
 
           $ionicLoading.hide();
-           alert('You have joined this organization');
+           alert('Your request is pending approval by the organisation');
             $log.info('organisation joined yay!');
             $log.info('Username:'+name+ ' Email:'+email+' Date:'+curdate);
 

@@ -10,9 +10,16 @@
         <br/>
         <strong>Date:   {{ event.event_date | myDateFormat }}</strong>
         <div>
-          {{ event.event_address}}<br/>
+
+        <div ng-bind-html="event.event_address">
+          {{ event.event_address}}
+         </div> 
+
+         <div ng-bind-html="event.event_description">
           <p>{{ event.event_description }}
           <p/>
+         </div>
+
           <button class="button button-block button-positive" id="calendarBtn" ng-click="createEvent()">
             Add to Device Calendar
           </button>

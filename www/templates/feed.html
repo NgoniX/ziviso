@@ -13,7 +13,7 @@
     </ion-refresher>
 
     <ion-list show-delete="false" can-swipe="true">
-      <ion-item ng-repeat="feed in feeds" ng-click="addData(feed.feed_id); delBadge(feed.feed_id)" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.feed_id})'>
+      <ion-item ng-repeat="feed in feeds" ng-click="addData(feed.feed_id); delBadge(feed.feed_id)" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.feed_id})' ng-init="init(feed.feed_id)">
 
       <img src="img/ziviso.png">
 

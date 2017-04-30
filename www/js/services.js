@@ -1,4 +1,4 @@
-angular.module('ziviso.services', ['firebase']);
+angular.module('ziviso.services', []);
 
 
 

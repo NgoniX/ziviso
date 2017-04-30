@@ -4,7 +4,43 @@ angular.module('ziviso.controllers', []);
 // Login Controller
 
 
-app.controller('LoginCtrl', function($scope, $firebaseArray, CONFIG, $document, $localStorage, $cordovaOauth, $ionicLoading, $state) {
+app.controller('LoginCtrl', function($scope, $firebaseArray, CONFIG, $document, $localStorage, $cordovaOauth, $ionicLoading,  $state) {
+
+
+// detect network connection here //////////////////////
+  //   document.addEventListener("deviceready", function () {
+
+  //   var type = $cordovaNetwork.getNetwork();
+
+  //   var isOnline = $cordovaNetwork.isOnline();
+
+  //   var isOffline = $cordovaNetwork.isOffline();
+
+
+  //   // listen for Online event
+  //   $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
+  //     var onlineState = networkState;
+  //     $ionicLoading.hide();
+  //   });
+
+  //   // listen for Offline event
+  //   $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
+  //     var offlineState = networkState;
+  //     $ionicLoading.hide();
+  //     $ionicPopup.confirm({
+  //         title: 'Network Problem',
+  //         content: 'Sorry, Please Check Your Network Connection.'
+  //       })
+  //       .then(function(result) {
+  //         if(!result) {
+  //           navigator.app.exitApp();
+  //         }
+  //       });
+
+  //   });
+
+  // }, false);
+  ///////////////////////////////////////////////////////////////////////////////
 
 
   // Perform Facebook Login/////////////////////////////////////////////////////////////////////////////////
@@ -303,13 +339,15 @@ $scope.doSignup = function(userSignup) {
 ///
 ///
 
-    app.controller('FeedCtrl', function ($scope, $log, $filter, $ionicLoading, $http, FeedData, $ionicFilterBar) {
+    app.controller('FeedCtrl', function ($scope, $log, $window, $ionicPopup, $filter, $ionicLoading, $http, FeedData, $ionicFilterBar, $rootScope, $cordovaNetwork) {
       
     $log.info('Feed Controller Created');
 
     $ionicLoading.show({
                template: 'Loading...'
               });
+
+   
     
     //get feed function
     $scope.getFeed = function(){
@@ -389,29 +427,62 @@ $scope.doSignup = function(userSignup) {
 
         $scope.feeds.splice(index, 1);
 
-         // angular.forEach($scope.feeds, function(value, key){
-         
-         //  if(index == value.feed_id){
+    };
 
-         //  $scope.feeds.splice($scope.feeds.indexOf(index), 1);
-         //   console.log("Item: " + value.feed_id);
+    ////////////////////////////////////////////////////////////////////////
 
-         //  }
 
-         //  });
+    $scope.init = function(feed_id){
+
+      // display user info
+    var user = firebase.auth().currentUser;
+
+    var name, email;
+
+      name = user.displayName;
+      email = user.email;
+      uid = user.uid;  
+
+
+      if (user !== null) {
+
+      //get feed click data from user node
+      return firebase.database().ref('/userInfo/' + name+'_'+feed_id).once('value').then(function(snapshot) {
+      var feedClick = snapshot.val().clicked;
+      var userEmail = snapshot.val().userEmail;
+      var getfeedID = snapshot.val().feedID;
 
       
-      // $scope.feeds.splice($scope.feeds.indexOf(index), 1);
-      // console.log('item removed ' + index);
-      // console.log('id of item ' + $scope.feedData);
-    };
+      //check if current user email = email in firebase db, feed paramter = feedID in firebase and clicked flag in firebase = yes
+      if(userEmail === email && feed_id === getfeedID && feedClick === 'yes'){
 
-    // remove new badge icon /////////////////////////////////////////
-
-    $scope.delBadge = function(feed_id){
-
+        // $scope.isClicked = feedClick;
+        // $scope.feedDBID = getfeedID;
+        
+        // remove new badge icon /////////////////////////////////////////
         document.getElementById("newBadge_"+feed_id).style.display="none";
+
+        $scope.goaway = "Go Away";
+        $log.info(feed_id +'<-->'+ getfeedID);
+        
+      }
+
+      else{
+
+        $scope.goaway = "Do not go";
+        $log.info($scope.id_feed +'<-->'+ getfeedID);
+
+      }
+
+      });
+
+     }
+
+     
+
     };
+
+    
 
     /////////////////////////////////////////////////////////////////
 
@@ -455,8 +526,11 @@ $scope.doSignup = function(userSignup) {
       //check if current user email = email in firebase db, feed paramter = feedID in firebase and clicked flag in firebase = yes
       if(userEmail === $scope.id && feed_id === getfeedID && feedClick === 'yes'){
 
-        $scope.isClicked = feedClick;
-        $scope.feedDBID = getfeedID;
+        // $scope.isClicked = feedClick;
+        // $scope.feedDBID = getfeedID;
+        
+        // remove new badge icon /////////////////////////////////////////
+        document.getElementById("newBadge_"+feed_id).style.display="none";
 
         $scope.goaway = "Go Away";
         $log.info(feed_id +'<-->'+ getfeedID);

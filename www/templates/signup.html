@@ -39,7 +39,7 @@
           <!-- username -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Username</span>
-            <input type="text" ng-model="$parent.userSignup.username" name="username" placeholder="Username" ng-minlength="3" ng-maxlength="50" required>
+            <input type="text" ng-model="$parent.userSignup.username" name="username" placeholder="Username" ng-minlength="4" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.username.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
@@ -47,7 +47,7 @@
           <!-- password -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Password</span>
-            <input type="password" ng-model="$parent.userSignup.password" name="password" placeholder="Password" ng-minlength="3" ng-maxlength="50" required>
+            <input type="password" ng-model="$parent.userSignup.password" name="password" placeholder="Password" ng-minlength="5" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.password.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
@@ -55,9 +55,9 @@
           <!-- confirm password -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Confirm Password</span>
-            <input type="password" ng-model="$parent.userSignup.password_confirmaton" ng-pattern="$parent.userSignup.password" name="password_confirmaton" placeholder="Confirm Password" ng-minlength="3" ng-maxlength="50" required>
+            <input type="password" ng-model="$parent.userSignup.password_confirmation" ng-pattern="$parent.userSignup.password" name="password_confirmation" placeholder="Confirm Password" ng-minlength="3" ng-maxlength="50" required>
           </label>
-          <div ng-messages="form_signup.password_confirmaton.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
+          <div ng-messages="form_signup.password_confirmation.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
           
           <!-- country -->

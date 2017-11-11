@@ -169,9 +169,10 @@ $scope.doSignup = function(userSignup) {
 
       authService.signup(userSignup.fullname, userSignup.email, userSignup.phone, 
         userSignup.profile, userSignup.username, userSignup.password, 
-        userSignup.password_confirmaton, userSignup.country).then((data) => {
+        userSignup.password_confirmation, userSignup.country).then((data) => {
 
           $ionicLoading.hide();
+          alert('Sign Up Successful. Please check your email to confirm');
           console.log(data);
           $state.go("login");
 
@@ -188,10 +189,6 @@ $scope.doSignup = function(userSignup) {
 
   
 });
-
-
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

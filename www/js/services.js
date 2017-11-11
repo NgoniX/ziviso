@@ -33,7 +33,7 @@ angular.module('ziviso.services', []);
 
       },
 
-      signup: function(name, email, phone, profile, username, password, password_confirmaton, country){
+      signup: function(name, email, phone, profile, username, password, password_confirmation, country){
         return $http({
         method: 'POST',
         url: baseURL + 'api/register',
@@ -44,7 +44,7 @@ angular.module('ziviso.services', []);
                     profile: profile,
                     username: username,
                     password: password,
-                    password_confirmaton: password_confirmaton,
+                    password_confirmation: password_confirmation,
                     country: country
                     }),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}

@@ -1,10 +1,10 @@
-<ion-view view-title="{{feed.feed_title}}">
+<ion-view view-title="{{feed.title}}">
   <ion-content>
     <div class="list card">
 
       <div class="item item-avatar">
-        <img src="img/ziviso.png">
-        <h2>{{feed.client_name}}</h2>
+        <img src="http://ziviso.afri-teq.com/{{feed.client.logo}}">
+        <h2>{{feed.groups[0].name}}</h2>
 
       </div>
       <div class="item item-image">
@@ -15,9 +15,9 @@
         <i class="icon ion-email"></i>
         Message
       </a>
-      <div class="item item-text-wrap" ng-bind-html="feed.feed_text">
-        <p>{{feed.feed_title}}</p>
-        {{feed.feed_text}}
+      <div class="item item-text-wrap" ng-bind-html="feed.details">
+        <p>{{feed.title}}</p>
+        {{feed.details}}
       </div>
 
     </div>

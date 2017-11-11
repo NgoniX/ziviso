@@ -1,5 +1,77 @@
 angular.module('ziviso.services', []);
 
+  const baseURL = 'http://ziviso.afri-teq.com/';
+
+  //create auth service
+  app.factory('authService', function($http, $httpParamSerializerJQLike, $localStorage){
+
+      var _user = localStorage.getItem('access_token');
+    
+
+    return {
+
+      isLoggedIn: function () {
+         return _user !== null ? true : false;
+      },
+
+      logout: function () {
+         localStorage.removeItem('access_token');
+         _user = null;
+      },
+
+      userInfo: function (){
+
+        return $http({
+
+          method: 'GET',
+          url: baseURL + 'api/user',
+          headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + _user
+          }
+        })
+
+      },
+
+      signup: function(name, email, phone, profile, username, password, password_confirmaton, country){
+        return $http({
+        method: 'POST',
+        url: baseURL + 'api/register',
+        data: $httpParamSerializerJQLike({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    profile: profile,
+                    username: username,
+                    password: password,
+                    password_confirmaton: password_confirmaton,
+                    country: country
+                    }),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      });
+
+      },
+
+      login: function(username, password){
+        return $http({
+        method: 'POST',
+        url: baseURL + 'oauth/token',
+        data: $httpParamSerializerJQLike({
+                    grant_type:"password",
+                    username: username,
+                    password: password,
+                    client_id:2,
+                    client_secret:"nQhD2uRVphdqgbNVSXqLiC8A3vzxV8qgkhikZLO8",
+                    scope:"*"
+                    }),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      });
+
+      } //end login
+      
+    };
+
+  })
 
 
     app.factory('FeedData', function ($log) {
@@ -16,7 +88,7 @@ angular.module('ziviso.services', []);
       getFeed: function (feedID) {
         for (var i = 0; i < theFeedData.length; i++) {
 
-          if (theFeedData[i].feed_id == parseInt(feedID)) {
+          if (theFeedData[i].id == parseInt(feedID)) {
             return theFeedData[i];
 
           }
@@ -28,7 +100,7 @@ angular.module('ziviso.services', []);
   })
 
   app.factory('FeedCache', function ($cacheFactory) {
-    return $cacheFactory('theFeedData')
+    return $cacheFactory('theFeedData');
   })
 
   .factory('OrgData', function ($log) {

@@ -4,20 +4,37 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-var config = {
-    apiKey: "AIzaSyAO1mDyal0XATkOGkkFKbNnxHJb-aQB5JM",
-    authDomain: "ziviso-app.firebaseapp.com",
-    databaseURL: "https://ziviso-app.firebaseio.com",
-    storageBucket: "ziviso-app.appspot.com",
-    messagingSenderId: "729359230116"
-  };
+
 
 var app = angular.module('ziviso', [
-  'ionic', 'ziviso.controllers', 'ngStorage', 'ziviso.services', 'ziviso.filters', 'ngCordova', 'jett.ionic.filter.bar', 'ngCordovaOauth', 'firebase'
+  'ionic', 'ziviso.controllers', 'ngStorage', 'ngMessages', 'ziviso.services', 'ziviso.filters', 'ngCordova', 'jett.ionic.filter.bar', 'ngCordovaOauth'
   ]);
 
-app.run(function($ionicPlatform,CONFIG,$state, $cordovaBadge, $ionicPopup) {
+
+app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup, authService) {
+   
   $ionicPlatform.ready(function() {
+
+  //check if user is already logged in
+  var currentUser = authService.isLoggedIn();
+      $rootScope.isLoggedIn = false;
+
+      if (currentUser) {
+          $state.go('app.feed');
+          $rootScope.isLoggedIn = true;
+      } else {
+          $state.go('login');
+      } 
+    //end function
+
+  var notificationOpenedCallback = function(jsonData) {
+    console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
+  };
+
+  window.plugins.OneSignal
+    .startInit("0d513e82-207f-4c38-869f-b287b380af05")
+    .handleNotificationOpened(notificationOpenedCallback)
+    .endInit();
 
      // Check for network connection
     if(window.Connection) {
@@ -33,6 +50,8 @@ app.run(function($ionicPlatform,CONFIG,$state, $cordovaBadge, $ionicPopup) {
         });
       }
     }
+
+ 
 
       // $cordovaBadge.hasPermission().then(function(result) {
       //           $cordovaBadge.set(4);
@@ -50,20 +69,6 @@ app.run(function($ionicPlatform,CONFIG,$state, $cordovaBadge, $ionicPopup) {
         }  
 
 
-  firebase.initializeApp(config);
-
-  var cuser = firebase.auth().currentUser;
-
-  //store user data in local storage
-  window.localStorage.setItem("cuser", cuser);
-
-  // get user data
-  var getUser = window.localStorage.getItem("cuser");
-
-  if(getUser !== "" || getUser !== undefined){
-    $state.go('app.feed');
-    console.log('Tamuwana: ' + getUser);
-  }
 
   // Check if user is already logged in
 //   firebase.auth().onAuthStateChanged(function(user) {
@@ -110,14 +115,6 @@ app.run(function($ionicPlatform,CONFIG,$state, $cordovaBadge, $ionicPopup) {
   });
 });
 
-app.constant('SERVER', {
-    url: 'http://portal.ziviso.co.zw/',
-    url_register: 'http://portal.ziviso.co.zw/auth/register',
-    url_confirm: 'http://portal.ziviso.co.zw/auth/confirm'
-    //url: 'api'
-  });
-
-app.constant("CONFIG", config);
 
  app.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
     $ionicConfigProvider.backButton.text('');
@@ -218,5 +215,8 @@ app.constant("CONFIG", config);
         }
       });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login');
+   $urlRouterProvider.otherwise(function ($injector) {
+            var $state = $injector.get("$state");
+            $state.go("login");
+        });
 });

@@ -3,6 +3,7 @@
 *
 * List of all filters
 */
+
 var appFilter = angular.module('ziviso.filters', []);
 
 ////Date filter//////////////////////////////

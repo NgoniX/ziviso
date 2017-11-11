@@ -11,29 +11,33 @@
       pulling-text="Pull to refresh..."
       on-refresh="refreshFeed()">
     </ion-refresher>
-
+  
     <ion-list show-delete="false" can-swipe="true">
-      <ion-item ng-repeat="feed in feeds" ng-click="addData(feed.feed_id); delBadge(feed.feed_id)" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.feed_id})' ng-init="init(feed.feed_id)">
+      <ion-item ng-repeat="feed in feeds" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.id})'>
+  
+      
+      <img class="logo" src="http://ziviso.afri-teq.com/{{feed.client.logo}}">
 
-      <img src="img/ziviso.png">
+      <h2><b>{{feed.groups[0].name}}</b>
 
-      <h2>{{feed.client_name}}
-
-      <div id="newBadge_{{ feed.feed_id }}" class="badge badge-positive">New</div>
+      <!-- <div class="badge badge-positive">New</div> -->
   
       </h2>
       
 
-      <p><h3>{{feed.feed_title}}</h3></p>
-      <p ng-bind-html="feed.feed_text | cut:true:50:' ...'"></p>
-      <p><i class="{{feed.feed_type}}"></i></p>
+      <p><h3>{{feed.title}}</h3></p>
+      <p ng-bind-html="feed.details | cut:true:50:' ...'"></p>
       <i class="icon ion-chevron-right icon-accessory"></i>
 
       <ion-option-button class="button-assertive" ng-click="delItem($index)">
             <i class = "icon icon ion-trash-a"></i>
       </ion-option-button>
 
+      
+
       </ion-item>
+
+      <div ng-show="!feeds.length" class="message">No Messages. If you have not joined a group please subscribe.</div>
 
     </ion-list>
 

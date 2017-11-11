@@ -8,7 +8,7 @@
       <div class="item item-text-wrap">
 
         <br/>
-        <strong>Date:   {{ event.event_date | myDateFormat }}</strong>
+        <strong>Date: {{ event.event_date | myDateFormat }}</strong>
         <div>
 
         <div ng-bind-html="event.event_address">
@@ -23,6 +23,11 @@
           <button class="button button-block button-positive" id="calendarBtn" ng-click="createEvent()">
             Add to Device Calendar
           </button>
+
+          <button class="button button-block button-danger" id="calendarBtn" ng-click="deleteEvent()">
+            Remove Event 
+          </button>
+
           </div>
 
 

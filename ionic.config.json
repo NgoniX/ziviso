@@ -1,4 +1,14 @@
 {
   "name": "ZivisoApp",
-  "app_id": "ebc86613"
+  "app_id": "5b8d1a6a",
+  "type": "ionic1",
+  "watchPatterns": [
+    "scss/**/*",
+    "www/**/*",
+    "!www/lib/**/*",
+    "!www/**/*.map"
+  ],
+  "integrations": {
+    "cordova": {}
+  }
 }

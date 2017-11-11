@@ -9,6 +9,14 @@
     margin: 0 auto;
 }
 
+.message { 
+	padding: 10px 10px;
+	font-size: 20px;
+    color: #666;
+    background-color: #eee;
+    text-shadow: 0px -1px 0px rgba(0,0,0,.5); /* 50% black coming from the top */
+}
+
 
 button.button-calm{
     width: 30%;
@@ -24,4 +32,17 @@ button#calendarBtn{
 
 button#forgot{
     width: 60.8%;
+}
+
+img.logo{
+	border-radius: 5px;
+}
+
+/** Styling for the error text and container **/
+.form-errors {
+  margin: 5px 0
+}
+.form-error {
+  padding: 2px 0 2px 16px;
+  color: red;
 }

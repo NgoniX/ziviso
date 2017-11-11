@@ -4,155 +4,48 @@ angular.module('ziviso.controllers', []);
 // Login Controller
 
 
-app.controller('LoginCtrl', function($scope, $firebaseArray, CONFIG, $document, $localStorage, $cordovaOauth, $ionicLoading,  $state) {
+app.controller('LoginCtrl', function($scope, $document, $localStorage, $ionicLoading, authService, $state) {
 
-
-// detect network connection here //////////////////////
-  //   document.addEventListener("deviceready", function () {
-
-  //   var type = $cordovaNetwork.getNetwork();
-
-  //   var isOnline = $cordovaNetwork.isOnline();
-
-  //   var isOffline = $cordovaNetwork.isOffline();
-
-
-  //   // listen for Online event
-  //   $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
-  //     var onlineState = networkState;
-  //     $ionicLoading.hide();
-  //   });
-
-  //   // listen for Offline event
-  //   $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
-  //     var offlineState = networkState;
-  //     $ionicLoading.hide();
-  //     $ionicPopup.confirm({
-  //         title: 'Network Problem',
-  //         content: 'Sorry, Please Check Your Network Connection.'
-  //       })
-  //       .then(function(result) {
-  //         if(!result) {
-  //           navigator.app.exitApp();
-  //         }
-  //       });
-
-  //   });
-
-  // }, false);
-  ///////////////////////////////////////////////////////////////////////////////
-
-
-  // Perform Facebook Login/////////////////////////////////////////////////////////////////////////////////
-  
-var fb_app_id = '261875504226369';
-  $scope.fblogin = function() {
-
-
- $cordovaOauth.facebook(fb_app_id, ["email"]).then(function(result) {
-            $localStorage.accessToken = result.access_token;
-            $state.go("app.feed");
-            console.log("Zvaita ");
-        }, function(error) {
-            alert("There was a problem signing in!  See the console for logs");
-            console.log(error);
-        });
-
-      
-      };
-
-
-  //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-  
-
-
-
+ //localStorage.clear();
+ console.log(localStorage.getItem('access_token'));
   // Perform the login action when the user submits the login form
   $scope.doLogin = function(userLogin) {
     
-    console.log(userLogin);
 
     if($document[0].getElementById("user_name").value != "" && $document[0].getElementById("user_pass").value != ""){
 
       $ionicLoading.show({
                template: 'Please Wait...'
-              });
+      });
 
-        firebase.auth().signInWithEmailAndPassword(userLogin.username, userLogin.password).then(function() {
-          // Sign-In successful.
-          //console.log("Login successful");
+      authService.login(userLogin.username, userLogin.password)
+      .then((data) => {
 
+         $scope.information = data;
+         // console.log(JSON.stringify($scope.information.data.token_type));
+        // localStorage.setItem("access_token", user.access_token);
+        if($scope.information.data.access_token !== null && data.status === 200){
 
-                    var user = firebase.auth().currentUser;
+          $ionicLoading.hide();
+          $state.go("app.feed");
+          localStorage.setItem("access_token", $scope.information.data.access_token);
 
-                    var name, email, photoUrl, uid;
+          console.log(data.status);
 
-                    if(user.emailVerified) { //check for verification email confirmed by user from the inbox
+        }
 
-                      $ionicLoading.hide();
-
-                      console.log("email verified");
-                      $state.go("app.feed");
-
-                      name = user.displayName;
-                      email = user.email;
-                      uid = user.uid;  
-
-                      console.log(name + "<>" + email + "<>" +  photoUrl + "<>" +  uid);
-
-
-                    }else{
-                        $ionicLoading.hide();
-                        alert("Email not verified, please check your inbox or spam messages");
-                        return false;
-
-                    } // end check verification email
-
-           
-        }, function(error) {
-          // An error happened.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          console.log(errorCode);
-          if (errorCode === 'auth/invalid-email') {
-             alert('Enter a valid email.');
-             $ionicLoading.hide();
-             return false;
-          }else if (errorCode === 'auth/wrong-password') {
-             alert('Incorrect password.');
-             $ionicLoading.hide();
-             return false;
-          }else if (errorCode === 'auth/argument-error') {
-             alert('Password must be string.');
-             $ionicLoading.hide();
-             return false;
-          }else if (errorCode === 'auth/user-not-found') {
-             alert('No such user found.');
-             $ionicLoading.hide();
-             return false;
-          }else if (errorCode === 'auth/too-many-requests') {
-             alert('Too many failed login attempts, please try after sometime.');
-             $ionicLoading.hide();
-             return false;
-          }else if (errorCode === 'auth/network-request-failed') {
-             alert('Request timed out, please try again.');
-             $ionicLoading.hide();
-             return false;
-          }else {
-             alert(errorMessage);
-             $ionicLoading.hide();
-             return false;
-
-          }
-        });
+      }).catch((err) => {
+        $ionicLoading.hide();
+        alert('Login failed. Please try again');
+        console.log(err);
+      });
 
 
+    }
 
-    }else{
+    else{
 
-        alert('Please enter email and password');
+        alert('Please enter username and/or password');
         return false;
 
     }//end check client username password
@@ -163,32 +56,41 @@ var fb_app_id = '261875504226369';
 }); 
 
 
-app.controller('AppCtrl', function($scope, $firebaseArray, CONFIG, $document, $state) {
+app.controller('AppCtrl', function($scope, authService, $localStorage, $document, $state, $ionicPopup) {
 
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (user) {
-        
-      $document[0].getElementById("photo_user").src = localStorage.getItem("photo");
-          
-        
-    } else {
-      // No user is signed in.
-      $state.go("login");
-    }
-  });
+  // get user info
+  authService.userInfo().then((data) => {
 
+         $scope.information = data;
+
+         $scope.name = $scope.information.data.name;
+         $scope.email = $scope.information.data.email;
+
+      }).catch((err) => {
+        console.log(err);
+      });
+  ////////////////////////////////////
 
   $scope.doLogout = function(){
-      
-      firebase.auth().signOut().then(function() {
-        // Sign-out successful.
-        //console.log("Logout successful");
-        $state.go("login");
 
-      }, function(error) {
-        // An error happened.
-        console.log(error);
-      });
+    var confirmPopup = $ionicPopup.confirm({
+     title: 'Logout',
+     template: 'Are you sure you want to logout?'
+   });
+
+   confirmPopup.then(function(res) {
+     if(res) {
+      
+        // Sign-out successful.
+        
+        authService.logout();
+        $state.go("login");
+        
+     } else {
+       // Code to be executed on pressing cancel or negative response
+     }
+   });
+
 
 };// end dologout()
 
@@ -197,7 +99,7 @@ app.controller('AppCtrl', function($scope, $firebaseArray, CONFIG, $document, $s
 });
 
 
-app.controller('ResetCtrl', function($scope, $state, $document, $ionicLoading, $firebaseArray, CONFIG) {
+app.controller('ResetCtrl', function($scope, $state, $document, $ionicLoading, $firebaseArray) {
 
 $scope.doResetemail = function(userReset) {
     
@@ -256,77 +158,34 @@ $scope.doResetemail = function(userReset) {
 
 
 
-app.controller('SignupCtrl', function($scope, $state, $document, $firebaseArray, $ionicLoading, CONFIG) {
+app.controller('SignupCtrl', function($scope, $state, $ionicLoading, authService) {
+
 
 $scope.doSignup = function(userSignup) {
     
+      $ionicLoading.show({
+               template: 'Please Wait...'
+      });
 
-   
-    //console.log(userSignup);
+      authService.signup(userSignup.fullname, userSignup.email, userSignup.phone, 
+        userSignup.profile, userSignup.username, userSignup.password, 
+        userSignup.password_confirmaton, userSignup.country).then((data) => {
 
-    if($document[0].getElementById("cuser_name").value != "" && $document[0].getElementById("cuser_pass").value != ""){
-
-     $ionicLoading.show({
-               template: 'Loading...'
-              });
-
-        firebase.auth().createUserWithEmailAndPassword(userSignup.cusername, userSignup.cpassword).then(function() {
-          // Sign-In successful.
-          //console.log("Signup successful");
-
-          var user = firebase.auth().currentUser;
-
-          user.sendEmailVerification().then(function(result) { console.log(result) },function(error){ console.log(error)}); 
-
-          user.updateProfile({
-            displayName: userSignup.displayname,
-            photoURL: userSignup.photoprofile
-          }).then(function() {
-            // Update successful.
-            $ionicLoading.hide();
-            $state.go("login");
-          }, function(error) {
-            // An error happened.
-            console.log(error);
-          });
-          
-          
+          $ionicLoading.hide();
+          console.log(data);
+          $state.go("login");
 
 
-        }, function(error) {
-          // An error happened.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          console.log(errorCode);
+      }).catch((err) => {
+        $ionicLoading.hide();
+        alert('Sign Up failed. Please try again');
+        console.log(err);
+      });
 
-          if (errorCode === 'auth/weak-password') {
-             alert('Password is weak, choose a strong password.');
-             $ionicLoading.hide();
-             return false;
-          }else if (errorCode === 'auth/email-already-in-use') {
-             alert('Email you entered is already in use.');
-             $ionicLoading.hide();
-             return false;
-          }
-
-
-
-          
-        });
-
-
-
-    }else{
-
-        alert('Please enter email and password');
-        return false;
-
-    }//end check client username password
 
     
   };// end $scope.doSignup()
-  
-  
+
   
 });
 
@@ -339,75 +198,35 @@ $scope.doSignup = function(userSignup) {
 ///
 ///
 
-    app.controller('FeedCtrl', function ($scope, $log, $window, $ionicPopup, $filter, $ionicLoading, $http, FeedData, $ionicFilterBar, $rootScope, $cordovaNetwork) {
-      
+app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log, $window, $ionicPopup, $filter, $ionicLoading, $http, FeedData, $ionicFilterBar, $cordovaNetwork) {
+   
     $log.info('Feed Controller Created');
 
     $ionicLoading.show({
                template: 'Loading...'
               });
 
-   
-    
     //get feed function
     $scope.getFeed = function(){
 
-    $http.get('http://portal.ziviso.co.zw/feed', { params: { "api_key": "feedapi"}}).
-      success(function (data, status, headers, config) {
+    const token = localStorage.getItem('access_token');
+
+    $http.get('http://ziviso.afri-teq.com/api/messages', 
+      { 
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      }).success(function (data, status, headers, config) {
 
         var feed_data = JSON.stringify(data);
-
-         
 
         $log.info('getting data');
         FeedData.initData(data);
         $scope.feeds = FeedData.getFeeds();
         $ionicLoading.hide();
+
         window.localStorage.setItem("feeds", feed_data);
-
-        ////////// For each ///////////////////////////////
-        angular.forEach(data, function(item){
-       // display user info
-        var user = firebase.auth().currentUser;
-
-        // check logged in user
-        if (user !== null) {
-
-        user.providerData.forEach(function (profile) {
-
-        $scope.username = profile.displayName;
-        $scope.id_feed = item.feed_id;
-
-         // get firebase value
-        return firebase.database().ref('/userInfo/' + $scope.username+'_'+$scope.id_feed).once('value').then(function(snapshot) {
-        var feed_click = snapshot.val().clicked;
-        var feedID = snapshot.val().feedID;
-
-        var key = snapshot.key;
-
-        //compare values//////////////////////////////////
-       $scope.compareValues = function(IDFeed){
-
-       if(IDFeed == feedID){
-
-          return feedID;
-
-        }
-
-       };
-       ////////// end compare ////////////////////////////
-
-        $log.info(key +'<-->'+ feedID);
-
-        });
-
-
-      });
-
-     }
-
-     });
-    ///////////////////  End for each  ////////////////////////
 
         $log.info('data saved');
       }).
@@ -431,128 +250,6 @@ $scope.doSignup = function(userSignup) {
 
     ////////////////////////////////////////////////////////////////////////
 
-
-    $scope.init = function(feed_id){
-
-      // display user info
-    var user = firebase.auth().currentUser;
-
-    var name, email;
-
-      name = user.displayName;
-      email = user.email;
-      uid = user.uid;  
-
-
-      if (user !== null) {
-
-      //get feed click data from user node
-      return firebase.database().ref('/userInfo/' + name+'_'+feed_id).once('value').then(function(snapshot) {
-      var feedClick = snapshot.val().clicked;
-      var userEmail = snapshot.val().userEmail;
-      var getfeedID = snapshot.val().feedID;
-
-      
-      //check if current user email = email in firebase db, feed paramter = feedID in firebase and clicked flag in firebase = yes
-      if(userEmail === email && feed_id === getfeedID && feedClick === 'yes'){
-
-        // $scope.isClicked = feedClick;
-        // $scope.feedDBID = getfeedID;
-        
-        // remove new badge icon /////////////////////////////////////////
-        document.getElementById("newBadge_"+feed_id).style.display="none";
-
-        $scope.goaway = "Go Away";
-        $log.info(feed_id +'<-->'+ getfeedID);
-        
-      }
-
-      else{
-
-        $scope.goaway = "Do not go";
-        $log.info($scope.id_feed +'<-->'+ getfeedID);
-
-      }
-
-      });
-
-     }
-
-     
-
-    };
-
-    
-
-    /////////////////////////////////////////////////////////////////
-
-
-    //click list to update firebase db
-    
-    $scope.addData = function(feed_id){
-
-      // display user info
-    var user = firebase.auth().currentUser;
-
-
-      if (user !== null) {
-
-      user.providerData.forEach(function (profile) {
-
-        $scope.name = profile.displayName;
-        $scope.email = profile.email;
-        $scope.id = profile.uid;
-
-        console.log("Sign-in provider: "+profile.providerId);
-        console.log("  Provider-specific UID: "+profile.uid);
-        console.log("  Name: "+profile.displayName);
-        console.log("  Email: "+profile.email);
-      });
-    
-      // Set data in firebase
-      firebase.database().ref('userInfo/' + $scope.name+'_'+feed_id).set({
-      feedID: feed_id,
-      clicked: "yes",
-      userEmail: $scope.id
-      });
-
-      //get feed click data from user node
-      return firebase.database().ref('/userInfo/' + $scope.name+'_'+feed_id).once('value').then(function(snapshot) {
-      var feedClick = snapshot.val().clicked;
-      var userEmail = snapshot.val().userEmail;
-      var getfeedID = snapshot.val().feedID;
-
-      
-      //check if current user email = email in firebase db, feed paramter = feedID in firebase and clicked flag in firebase = yes
-      if(userEmail === $scope.id && feed_id === getfeedID && feedClick === 'yes'){
-
-        // $scope.isClicked = feedClick;
-        // $scope.feedDBID = getfeedID;
-        
-        // remove new badge icon /////////////////////////////////////////
-        document.getElementById("newBadge_"+feed_id).style.display="none";
-
-        $scope.goaway = "Go Away";
-        $log.info(feed_id +'<-->'+ getfeedID);
-        
-      }
-
-      else{
-
-        $scope.goaway = "Do not go";
-        $log.info($scope.id_feed +'<-->'+ getfeedID);
-
-      }
-
-      });
-
-     }
-
-     
-
-    };
-
-    /////////////////////////////////////////////////////////////////////////////////////
 
     
     // get feed here
@@ -581,29 +278,7 @@ $scope.doSignup = function(userSignup) {
 
 
 
-  //   function allNotFound(filteredItems) {
-  //   angular.forEach($scope.feeds, function(item){
-  //     item.found = false;
-  //   });
-  // }
-  
-  // function matchingItems(filteredItems) {
-  //   angular.forEach($scope.feeds, function(item){
-  //       var found = $filter('filter')(filteredItems, {feed_title: item.feed_title});
-  //       if (found && found.length > 0) {
-  //           console.log('found', item.feed_title);
-  //           item.found = true;
-
-  //       } else {
-  //         item.found = false;
-  //         console.log('not found', item.feed_title);
-  //       }
-  //   });
-  // }
-
-
   });
-
   
 
   app.controller('FeedDetailCtrl', function ($scope, $stateParams, $log, FeedData) {
@@ -664,6 +339,34 @@ if (user !== null) {
         }
 
       });
+
+      $scope.selectedAll = true;
+      $scope.selectedMy = false;
+      //show selected value from select dropdown
+      $scope.showSelectValue = function(mySelect) {
+
+        if(mySelect == "My Organizations"){
+
+          $scope.selectedAll = false;
+          $scope.selectedMy = true;
+
+          // var ion = document.getElementsByTagName("ion-item");
+          // var att = document.createAttribute("ng-show");
+          // att.value = "org.org_id == organisation_id";
+          // ion.setAttributeNode(att);
+
+      }
+
+      else {
+
+          $scope.selectedAll = true;
+          $scope.selectedMy = false;
+
+
+      }
+
+       console.log(mySelect);
+     }
 
       $scope.showFilterBar = function () {
       var filterBarInstance = $ionicFilterBar.show({
@@ -779,7 +482,34 @@ if (user !== null) {
     });
 
     };
-    /////////end fucntion////////////////////////////////////////////
+    /////////end function////////////////////////////////////////////
+
+
+     // delete an event function ////////////////////////////////
+      $scope.deleteEvent = function() {
+      //var obj = angular.toJson(data);
+      
+      $scope.event_info = data; 
+
+      angular.forEach($scope.event_info, function(item){
+
+        $cordovaCalendar.deleteEvent({
+            title: item.event_title,
+            startDate: new Date(item.event_date),
+            endDate: new Date(item.event_date)
+        }).then(function (result) {
+            console.log("Event removed");
+            $ionicLoading.hide();
+
+        }, function (err) {
+            console.error("There was an error: " + err);
+            $ionicLoading.hide();
+        });
+
+    });
+
+    };
+    /////////end function////////////////////////////////////////////
     
         Events.initData(data);
         $scope.events = Events.getEvents();

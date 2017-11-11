@@ -4,24 +4,33 @@
     </button>
   </ion-nav-buttons>
   <ion-content>
-    <div class="list">
 
+    <div class="list">
       <label class="item item-input item-select">
         <div class="input-label">
           Select View
         </div>
-        <select>
+        <select ng-model="mySelect" ng-change="showSelectValue(mySelect)">
           <!--<option>Recommended</option>-->
           <!--<option selected>My Organizations</option>-->
-          <option>All Organizations</option>
+          <option selected>All Organizations</option>
           <option>My Organizations</option>
         </select>
       </label>
-
     </div>
+
     <ion-list>
-      <ion-item ng-repeat="org in orgs" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-detail({orgId: org.org_id})'>
-        <img src="img/logos/160/ziviso_wave160.png">
+      <ion-item ng-repeat="org in orgs" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-detail({orgId: org.org_id})' ng-show='org.org_id == organisation_id'>
+
+        <img src="http://portal.ziviso.co.zw/uploads/organization_logos/{{ org.client_logo_url }}">
+        <h2>{{org.client_name}}</h2>
+        <p><h3>{{org.client_email}}</h3></p>
+
+      </ion-item>
+
+      <ion-item ng-repeat="org in orgs" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-detail({orgId: org.org_id})' ng-hide='selectedMy'>
+
+        <img src="http://portal.ziviso.co.zw/uploads/organization_logos/{{ org.client_logo_url }}">
         <h2>{{org.client_name}}</h2>
         <p><h3>{{org.client_email}}</h3></p>
 

@@ -20,21 +20,15 @@
     </div>
 
     <ion-list>
-      <ion-item ng-repeat="org in orgs" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-detail({orgId: org.org_id})' ng-show='org.org_id == organisation_id'>
+      
+      <ion-item ng-repeat="org in orgs" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-detail({orgId: org.id})'>
 
-        <img src="http://portal.ziviso.co.zw/uploads/organization_logos/{{ org.client_logo_url }}">
-        <h2>{{org.client_name}}</h2>
-        <p><h3>{{org.client_email}}</h3></p>
-
-      </ion-item>
-
-      <ion-item ng-repeat="org in orgs" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-detail({orgId: org.org_id})' ng-hide='selectedMy'>
-
-        <img src="http://portal.ziviso.co.zw/uploads/organization_logos/{{ org.client_logo_url }}">
-        <h2>{{org.client_name}}</h2>
-        <p><h3>{{org.client_email}}</h3></p>
+        <img src="http://ziviso.afri-teq.com/{{ org.logo }}">
+        <h2>{{org.description}}</h2>
+        <p><h3>{{org.user.email}}</h3></p>
 
       </ion-item>
+
 
     </ion-list>
   </ion-content>

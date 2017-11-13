@@ -315,12 +315,19 @@ if (user !== null) {
   app.controller('OrgsCtrl', function ($scope, $log, $http, $ionicLoading, OrgData, $ionicFilterBar) {
     $log.info('Orgs Controller Created');
 
+    const token = localStorage.getItem('access_token');
+
     $ionicLoading.show({
                template: 'Loading...'
               });
 
-    $http.get('http://portal.ziviso.co.zw/orgs', { params: {"api_key": "orgsfeed"}})
-    .success(function (data, headers, config) {
+    $http.get('http://ziviso.afri-teq.com/api/clients', 
+        { 
+          headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      }).success(function (data, headers, config) {
         OrgData.initData(data);
         $scope.orgs = OrgData.getOrgs();
         window.localStorage.setItem("orgs", JSON.stringify(data));
@@ -346,11 +353,6 @@ if (user !== null) {
 
           $scope.selectedAll = false;
           $scope.selectedMy = true;
-
-          // var ion = document.getElementsByTagName("ion-item");
-          // var att = document.createAttribute("ng-show");
-          // att.value = "org.org_id == organisation_id";
-          // ion.setAttributeNode(att);
 
       }
 
@@ -384,52 +386,36 @@ if (user !== null) {
 
     // insert data into subscribers table when user clicks join org
 
-    // display user info
-    var user = firebase.auth().currentUser;
+      // var date = new Date();
+      // var curdate = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
 
-    var name, email, uid;
+      $scope.joinOrg = function(org_id){
 
-      name = user.displayName;
-      email = user.email;
-      uid = user.uid; 
-      var date = new Date();
-      var curdate = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
- 
-    $scope.joinOrg = function(org_id){
-        var link = 'http://portal.ziviso.co.zw/subscribers/joinOrg';
-        
-        var post_data = {
-          username : name,
-          email : email,
-          curDate: curdate,
-          orgID: org_id
+        const token = localStorage.getItem('access_token');
+
+        var link = 'http://ziviso.afri-teq.com/api/groups/'+org_id+'/join';
+
+            $ionicLoading.show({
+                   template: 'Please Wait...'
+            });
+
+            $http.post(link, { 
+
+             headers: { Authorization: 'Bearer ' + token }
+
+            }).then(function (data, status, headers, config){
+
+              $ionicLoading.hide();
+               alert('Your request is pending approval by the organisation');
+               $log.info('organisation joined yay!');
+
+            }, function (data, status, headers, config) {
+            $ionicLoading.hide();
+             $log.info('error: ' + data);
+            });
+
         };
-
-        $ionicLoading.show({
-               template: 'Please Wait...'
-              });
-
-        $http.post(link, post_data, { 
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-        }
-        }).
-        then(function (data, status, headers, config){
-
-          $ionicLoading.hide();
-           alert('Your request is pending approval by the organisation');
-            $log.info('organisation joined yay!');
-            $log.info('Username:'+name+ ' Email:'+email+' Date:'+curdate);
-
-        }, function (data, status, headers, config) {
-        $ionicLoading.hide();
-         $log.info('error: ' + data);
-         $log.info('Username:'+name+ ' Email:'+email+' Date:'+curdate+' orgID:'+org_id);
-        });
-        
-    };
-
-
+     
 
   });
 

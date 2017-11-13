@@ -103,7 +103,7 @@ angular.module('ziviso.services', []);
     return $cacheFactory('theFeedData');
   })
 
-  .factory('OrgData', function ($log) {
+  app.factory('OrgData', function ($log) {
     $log.info('OrgData Created');
     var theOrgData = [];
 
@@ -117,7 +117,7 @@ angular.module('ziviso.services', []);
       },
       getOrg: function (orgID) {
         for (var i = 0; i < theOrgData.length; i++) {
-          if (theOrgData[i].org_id == parseInt(orgID)) {
+          if (theOrgData[i].id == parseInt(orgID)) {
             $log.info(theOrgData[i]);
             return theOrgData[i];
 

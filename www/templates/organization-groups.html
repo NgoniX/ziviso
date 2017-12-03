@@ -1,0 +1,24 @@
+<ion-view view-title="Organization Groups">
+  <ion-nav-buttons side="secondary">
+    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+
+    <ion-list>
+      
+      <ion-item ng-repeat="grp in grps.groups" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-detail({orgId: grp.id, orgName: grp.name, orgDesc: grp.description})'>
+
+        <img src="http://ziviso.afri-teq.com/{{ logo }}">
+        <h2>{{grp.name}}</h2>
+        <p><h3>{{grp.description}}</h3></p>
+
+      </ion-item>
+      
+      <div ng-if="grps.groups.length<=0" class="message">
+       <p><font color="#F00">There are no groups yet</font></p>
+      </div>
+
+    </ion-list>
+  </ion-content>
+</ion-view>

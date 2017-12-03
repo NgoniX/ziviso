@@ -56,15 +56,15 @@ app.controller('LoginCtrl', function($scope, $document, $localStorage, $ionicLoa
 }); 
 
 
-app.controller('AppCtrl', function($scope, authService, $localStorage, $document, $state, $ionicPopup) {
+app.controller('AppCtrl', function($scope, $rootScope, authService, $localStorage, $document, $state, $ionicPopup) {
 
   // get user info
   authService.userInfo().then((data) => {
 
          $scope.information = data;
 
-         $scope.name = $scope.information.data.name;
-         $scope.email = $scope.information.data.email;
+         $rootScope.name = $scope.information.data.name;
+         $rootScope.email = $scope.information.data.email;
 
       }).catch((err) => {
         console.log(err);
@@ -99,58 +99,34 @@ app.controller('AppCtrl', function($scope, authService, $localStorage, $document
 });
 
 
-app.controller('ResetCtrl', function($scope, $state, $document, $ionicLoading, $firebaseArray) {
+app.controller('ResetCtrl', function($scope, $state, $document, $ionicLoading, authService) {
 
-$scope.doResetemail = function(userReset) {
-    
+$scope.doReset = function(userReset) {
 
-   
     //console.log(userReset);
-
-    if($document[0].getElementById("ruser_name").value != ""){
 
        $ionicLoading.show({
                template: 'Loading...'
               });
 
-        firebase.auth().sendPasswordResetEmail(userReset.rusername).then(function() {
-          // Sign-In successful.
-          //console.log("Reset email sent successful");
-          
-          $state.go("login");
-          alert('Email has been sent. Please check your inbox');
+        authService.resetPass(userReset.current_password, userReset.password, 
+        userReset.password_confirmation).then((data) => {
+
           $ionicLoading.hide();
-
-        }, function(error) {
-          // An error happened.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          console.log(errorCode);
-
-          
-          if (errorCode === 'auth/user-not-found') {
-             alert('No user found with provided email.');
-             $ionicLoading.hide();
-             return false;
-          }else if (errorCode === 'auth/invalid-email') {
-             alert('Email you entered is not complete or invalid.');
-             $ionicLoading.hide();
-             return false;
-          }
-          
-        });
+          alert('Password Reset Successful.');
+          console.log(JSON.stringify(data));
+          $state.go("login");
 
 
+      }).catch((err) => {
+        $ionicLoading.hide();
+        alert('Password Reset failed. Please try again');
+        console.log(err);
+      });
 
-    }else{
-
-        alert('Please enter registered email to send reset link');
-        return false;
-
-    }//end check client username password
 
     
-  };// end $scope.doSignup()
+  };// end $scope.doReset()
   
   
   
@@ -199,6 +175,34 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
    
     $log.info('Feed Controller Created');
 
+    const token = localStorage.getItem('access_token');
+
+    //function that shows if user has read the message
+    $scope.IsVisible = true;
+    $scope.read = function(feedId) {
+
+      //This will hide the new badge
+      $scope.IsVisible = false;
+
+        var link = 'http://ziviso.afri-teq.com/api/messages/'+feedId+'/read';
+
+            $http({
+            url: link,
+            method: "POST",
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+            }).then(function (data, status, headers, config){
+
+               $log.info('message read!');
+
+            }, function (data, status, headers, config) {
+             $log.info('error: ' + JSON.stringify(data));
+            });
+
+    }
+    ///////////////////////////////////////////////////////////////////
+
     $ionicLoading.show({
                template: 'Loading...'
               });
@@ -238,10 +242,28 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
     };
 
 
-    //remove list item from localstorage
-    $scope.delItem = function(index){
+    //remove list item from feed
+    $scope.delItem = function(index, feedId){
 
         $scope.feeds.splice(index, 1);
+
+        //delete the message
+         var link = 'http://ziviso.afri-teq.com/api/messages/'+feedId+'/delete';
+
+            $http({
+            url: link,
+            method: "POST",
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+            }).then(function (data, status, headers, config){
+
+               $log.info('message deleted!');
+
+            }, function (data, status, headers, config) {
+             $log.info('error: ' + JSON.stringify(data));
+            });
+            // end
 
     };
 
@@ -286,24 +308,7 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
 
 
 
-  app.controller('ProfileCtrl', function ($scope, $firebaseArray, CONFIG, $cordovaSocialSharing) {
-
-// display user info
-    var user = firebase.auth().currentUser;
-
-if (user !== null) {
-  user.providerData.forEach(function (profile) {
-
-    $scope.name = profile.displayName;
-    $scope.email = profile.email;
-
-    console.log("Sign-in provider: "+profile.providerId);
-    console.log("  Provider-specific UID: "+profile.uid);
-    console.log("  Name: "+profile.displayName);
-    console.log("  Email: "+profile.email);
-    console.log("  Photo URL: "+profile.photoURL);
-  });
-}
+  app.controller('ProfileCtrl', function ($scope, $cordovaSocialSharing) {
     
     $scope.shareAnywhere = function() {
         $cordovaSocialSharing.share("Keep in touch with your organization by downloading the Ziviso app", "Ziviso App", "", "http://portal.ziviso.co.zw");
@@ -312,7 +317,7 @@ if (user !== null) {
   });
 
 
-  app.controller('OrgsCtrl', function ($scope, $log, $http, $ionicLoading, OrgData, $ionicFilterBar) {
+  app.controller('OrgsCtrl', function ($scope, $rootScope, $stateParams, $log, $http, $ionicLoading, OrgData, $ionicFilterBar) {
     $log.info('Orgs Controller Created');
 
     const token = localStorage.getItem('access_token');
@@ -330,9 +335,18 @@ if (user !== null) {
       }).success(function (data, headers, config) {
         OrgData.initData(data);
         $scope.orgs = OrgData.getOrgs();
+        //get groups within client
+        $scope.grps = OrgData.getOrg($stateParams.orgId);
+        //get organization logo
+        $rootScope.logo = $stateParams.orgLogo;
+        //get organization email
+        $rootScope.orgemail = $stateParams.orgEmail;
+        //get organization phone
+        $rootScope.orgphone = $stateParams.orgPhone;
         window.localStorage.setItem("orgs", JSON.stringify(data));
         $ionicLoading.hide();
-        $log.info('data saved');
+        $log.info('data saved 1st org');
+        $log.info($stateParams.orgLogo);
 
       })
       .error(function (data, headers, config) {
@@ -384,6 +398,12 @@ if (user !== null) {
     $log.info('Org Detail Controller Created');
     $scope.org = OrgData.getOrg($stateParams.orgId);
 
+    $scope.id = $stateParams.orgId;
+    $scope.name = $stateParams.orgName;
+    $scope.description = $stateParams.orgDesc;
+
+    $log.info($stateParams.orgId);
+
     // insert data into subscribers table when user clicks join org
 
       // var date = new Date();
@@ -399,10 +419,12 @@ if (user !== null) {
                    template: 'Please Wait...'
             });
 
-            $http.post(link, { 
-
-             headers: { Authorization: 'Bearer ' + token }
-
+            $http({
+            url: link,
+            method: "POST",
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
             }).then(function (data, status, headers, config){
 
               $ionicLoading.hide();
@@ -421,21 +443,21 @@ if (user !== null) {
 
 
   app.controller('CalendarCtrl', function ($scope, Events, $ionicFilterBar, $ionicLoading, $log, $http, $cordovaCalendar) {
-    // With the new view caching in Ionic, Controllers are only called
-    // when they are recreated or on app start, instead of every page change.
-    // To listen for when this page is active (for example, to refresh data),
-    // listen for the $ionicView.enter event:
-    //
-    //$scope.$on('$ionicView.enter', function(e) {
-
-    //})
+    
     $ionicLoading.show({
                template: 'Loading...'
               });
    
 
-    $http.get('http://portal.ziviso.co.zw/events-api').
-      success(function (data, headers, config) {
+    const token = localStorage.getItem('access_token');
+
+    $http.get('http://ziviso.afri-teq.com/api/events', 
+      { 
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      }).success(function (data, status, headers, config) {
 
         $ionicLoading.hide();
 

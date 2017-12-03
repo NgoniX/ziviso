@@ -48,3 +48,10 @@ img.logo{
   color: red;
 }
 
+/* sign up button */
+
+.signup{
+  min-width: 100%;
+  border-radius: 0px;
+}
+

@@ -185,8 +185,18 @@ app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup,
       }
     })
 
+    .state('app.organization-groups', {
+      url: '/organization/:orgId?orgLogo?orgEmail?orgPhone',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/organization-groups.html',
+          controller: 'OrgsCtrl'
+        }
+      }
+    })
+
   .state('app.organization-detail', {
-    url: '/organization/:orgId',
+    url: '/organization/:orgId?orgName?orgDesc',
     views: {
       'menuContent': {
         templateUrl: 'templates/organization-detail.html',
@@ -194,6 +204,8 @@ app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup,
       }
     }
   })
+
+
 
    .state('app.calendar', {
         url: '/calendar',

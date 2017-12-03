@@ -13,14 +13,14 @@
     </ion-refresher>
   
     <ion-list show-delete="false" can-swipe="true">
-      <ion-item ng-repeat="feed in feeds" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.id})'>
+      <ion-item ng-repeat="feed in feeds" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.id})' ng-click="read(feed.id)">
   
       
       <img class="logo" src="http://ziviso.afri-teq.com/{{feed.client.logo}}">
 
       <h2><b>{{feed.groups[0].name}}</b>
 
-      <!-- <div class="badge badge-positive">New</div> -->
+      <div ng-show="IsVisible" ng-if="feed.message_reads[0].status==0" class="badge badge-positive">New</div>
   
       </h2>
       
@@ -29,7 +29,7 @@
       <p ng-bind-html="feed.details | cut:true:50:' ...'"></p>
       <i class="icon ion-chevron-right icon-accessory"></i>
 
-      <ion-option-button class="button-assertive" ng-click="delItem($index)">
+      <ion-option-button class="button-assertive" ng-click="delItem($index, feed.id)">
             <i class = "icon icon ion-trash-a"></i>
       </ion-option-button>
 

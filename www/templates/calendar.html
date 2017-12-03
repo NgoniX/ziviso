@@ -3,20 +3,17 @@
 
     <div class="card" ng-repeat="event in events">
       <div class="item item-divider">
-        {{event.event_title}}
+        {{event.title}}
       </div>
       <div class="item item-text-wrap">
 
         <br/>
-        <strong>Date: {{ event.event_date | myDateFormat }}</strong>
+        <strong>Date: {{ event.start_time | myDateFormat }}</strong>
         <div>
 
-        <div ng-bind-html="event.event_address">
-          {{ event.event_address}}
-         </div> 
 
-         <div ng-bind-html="event.event_description">
-          <p>{{ event.event_description }}
+         <div ng-bind-html="event.details">
+          <p>{{ event.details }}
           <p/>
          </div>
 

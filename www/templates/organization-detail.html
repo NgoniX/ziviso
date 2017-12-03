@@ -1,20 +1,20 @@
-<ion-view view-title="{{org.description}}">
+<ion-view view-title="{{ description }}">
   <ion-content>
     <div class="list card">
 
       <div class="item item-avatar">
-        <img src="http://ziviso.afri-teq.com/{{ org.logo }}">
-        <p><b><font size="5px">{{org.description}}</font></b></p>
+        <img src="http://ziviso.afri-teq.com/{{ logo }}">
+        <p><b><font size="5px">{{ name }}</font></b></p>
       </div>
 
-      <a class="item item-icon-left positive" ng-click="joinOrg(org.id)">
+      <a class="item item-icon-left positive" ng-click="joinOrg(id)">
         <i class="icon ion-ios-personadd"></i>
-        Join organisation's Ziviso mailing list
+        Click here to join group
       </a>
       <div class="item item-text-wrap">
 
-        <p><h3>{{org.user.email}}</h3></p>
-        <p><h3>{{org.user.phone}}</h3></p>
+        <p><h3>{{orgemail}}</h3></p>
+        <p><h3>{{orgphone}}</h3></p>
 
       </div>
 

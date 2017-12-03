@@ -1,19 +1,25 @@
 <ion-view hide-back-button="false" title="Reset Password" hide-nav-bar="false" >
   <ion-content class="has-header">
   
-	<form name="form_reset" ng-submit="doResetemail(userReset)" novalidate>
+	<form name="form_reset" ng-submit="doReset(userReset)" novalidate>
 	  	<div class="list">
 		  
-		  <label class="item item-input item-floating-label">
-		    <span class="input-label">Email</span>
-		    <input type="text" ng-model="$parent.userReset.rusername" id="ruser_name" placeholder="Enter email">
-		  </label>
+		  <!-- new password -->
+          <label class="item item-input item-floating-label">
+            <span class="input-label">Enter Email</span>
+            <input type="email" ng-model="$parent.userReset.email" name="email" placeholder="Enter email address" ng-minlength="5" ng-maxlength="50" required>
+          </label>
+          <div ng-messages="form_reset.email.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
+          </div>
 
-		  
+          
 		</div>
-		<div class="padding">
-			<button type="submit" class="button button-block button-calm">Reset</button>
-		</div>
+
+		<div class="padding" align="center">
+            <button type="submit" class="button button-block button-calm signup" 
+            ng-disabled="form_reset.$invalid">Reset</button>
+          </div>
+
 	 </form>
 		
 	

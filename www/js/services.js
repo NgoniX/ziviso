@@ -5,7 +5,7 @@ angular.module('ziviso.services', []);
   //create auth service
   app.factory('authService', function($http, $httpParamSerializerJQLike, $localStorage){
 
-      var _user = localStorage.getItem('access_token');
+    var _user = localStorage.getItem('access_token');
     
 
     return {
@@ -48,6 +48,23 @@ angular.module('ziviso.services', []);
                     country: country
                     }),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      });
+
+      },
+
+      resetPass: function(current_password, password, password_confirmation){
+        return $http({
+        method: 'POST',
+        url: baseURL + 'api/update-password',
+        data: $httpParamSerializerJQLike({
+                    current_password: current_password,
+                    password: password,
+                    password_confirmation: password_confirmation
+                    }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + _user
+          }
       });
 
       },
@@ -142,7 +159,7 @@ angular.module('ziviso.services', []);
       },
       getEvent: function (eventID) {
         for (var i = 0; i < theEventData.length; i++) {
-          if (theEventData[i].event_id == parseInt(eventID)) {
+          if (theEventData[i].id == parseInt(eventID)) {
             $log.info(theEventData[i]);
             return theEventData[i];
 

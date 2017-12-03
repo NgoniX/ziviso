@@ -1,0 +1,44 @@
+<ion-view hide-back-button="false" title="Reset Password" hide-nav-bar="false" >
+  <ion-content class="has-header">
+  
+	<form name="form_reset" ng-submit="doReset(userReset)" novalidate>
+	  	<div class="list">
+		  
+		  <!-- new password -->
+          <label class="item item-input item-floating-label">
+            <span class="input-label">Current Password</span>
+            <input type="password" ng-model="$parent.userReset.current_password" name="current_password" placeholder="Current Password" ng-minlength="5" ng-maxlength="50" required>
+          </label>
+          <div ng-messages="form_reset.current_password.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
+          </div>
+
+		   <!-- new password -->
+          <label class="item item-input item-floating-label">
+            <span class="input-label">New Password</span>
+            <input type="password" ng-model="$parent.userReset.password" name="password" placeholder="Password" ng-minlength="5" ng-maxlength="50" required>
+          </label>
+          <div ng-messages="form_reset.password.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
+          </div>
+
+          <!-- confirm password -->
+          <label class="item item-input item-floating-label">
+            <span class="input-label">Confirm Password</span>
+            <input type="password" ng-model="$parent.userReset.password_confirmation" ng-pattern="$parent.userReset.password" name="password_confirmation" placeholder="Confirm Password" ng-minlength="5" ng-maxlength="50" required>
+          </label>
+          <div ng-messages="form_reset.password_confirmation.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
+          </div>
+          
+
+		  
+		</div>
+
+		<div class="padding" align="center">
+            <button type="submit" class="button button-block button-calm signup" 
+            ng-disabled="form_reset.$invalid">Reset</button>
+          </div>
+
+	 </form>
+		
+	
+  </ion-content>
+</ion-view>

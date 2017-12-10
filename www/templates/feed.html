@@ -20,7 +20,7 @@
 
       <h2><b>{{feed.groups[0].name}}</b>
 
-      <div ng-show="IsVisible" ng-if="feed.message_reads[0].status==0" class="badge badge-positive">New</div>
+      <div id="badge_{{feed.id}}" ng-if="feed.message_reads[0].status==0" class="badge badge-positive">New</div>
   
       </h2>
       

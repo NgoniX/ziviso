@@ -178,11 +178,11 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
     const token = localStorage.getItem('access_token');
 
     //function that shows if user has read the message
-    $scope.IsVisible = true;
+   
     $scope.read = function(feedId) {
 
       //This will hide the new badge
-      $scope.IsVisible = false;
+      document.getElementById("badge_"+feedId).style.display = 'none'; 
 
         var link = 'http://ziviso.afri-teq.com/api/messages/'+feedId+'/read';
 

@@ -12,7 +12,7 @@
 .message { 
   text-align: center;
 	padding: 10px 10px;
-	font-size: 20px;
+	font-size: 14px;
     color: #666;
     background-color: #eee;
     text-shadow: 0px -1px 0px rgba(0,0,0,.5); /* 50% black coming from the top */

@@ -13,7 +13,7 @@
     </ion-refresher>
   
     <ion-list show-delete="false" can-swipe="true">
-      <ion-item ng-repeat="feed in feeds" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.id})' ng-click="read(feed.id)">
+      <ion-item ng-repeat="feed in feeds | orderBy: '-created_at' " class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.id})' ng-click="read(feed.id)">
   
       
       <img class="logo" src="http://ziviso.afri-teq.com/{{feed.client.logo}}">
@@ -38,9 +38,13 @@
       </ion-item>
 
       <div ng-show="!feeds.length" class="message">
-       <p><font color="#F00">No Messages</font></p>
-       <p>If you have not joined a group please subscribe</p>
+       <p><font color="#F00">There are no messages to show</font></p>
+       
+       <button class="button button-block button-balanced" ui-sref="app.organizations"><i class="icon ion-person-add"></i> Subscribe</button>
       </div>
+      
+      
+      
 
     </ion-list>
 

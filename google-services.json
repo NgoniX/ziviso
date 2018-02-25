@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "950209234671",
+    "firebase_url": "https://ziviso-4d9f1.firebaseio.com",
+    "project_id": "ziviso-4d9f1",
+    "storage_bucket": "ziviso-4d9f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:950209234671:android:7b2eafbe7ba7e282",
+        "android_client_info": {
+          "package_name": "com.ziviso.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "950209234671-o4692suof698ubqtngp6fpj34r8rjhh0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ziviso.app",
+            "certificate_hash": "629b22221645ce64830c2619e3f8dcd4ad6cbaff"
+          }
+        },
+        {
+          "client_id": "950209234671-g11egorbfrgvlu3gk877r5ffucqhb3ah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhZdTk2BuWbiEsdziWinXQJ_Vd8ao20K0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "950209234671-g11egorbfrgvlu3gk877r5ffucqhb3ah.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

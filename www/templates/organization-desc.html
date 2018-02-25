@@ -1,0 +1,22 @@
+<ion-view view-title="{{ name }}">
+  <ion-content>
+    <div class="list card">
+
+      <div class="item item-avatar">
+        <img src="https://ziviso.fndtechnologies.com/{{ logo }}">
+        <p><h3>{{email}}</h3></p>
+        <p><h3>{{phone}}</h3></p>
+
+      </div>
+
+      <button class="button button-block button-balanced" ui-sref="app.organization-groups({orgId: org.id, orgLogo: org.logo, orgEmail: org.user.email, orgPhone: org.user.phone})"><i class="icon ion-ios-people"></i> Show Groups</button>
+
+      <div class="item item-text-wrap">
+        
+        <p><h3>{{description}}</h3></p>
+
+      </div>
+
+    </div>
+  </ion-content>
+</ion-view>

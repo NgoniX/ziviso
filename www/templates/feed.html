@@ -16,7 +16,7 @@
       <ion-item ng-repeat="feed in feeds | orderBy: '-created_at' " class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.feed-detail({feedId: feed.id})' ng-click="read(feed.id)">
   
       
-      <img class="logo" src="http://ziviso.afri-teq.com/{{feed.client.logo}}">
+      <img class="logo" src="https://ziviso.fndtechnologies.com/{{feed.client.logo}}">
 
       <h2><b>{{feed.groups[0].name}}</b>
 
@@ -47,6 +47,8 @@
       
 
     </ion-list>
+
+    <!-- <button type="submit" ng-click="send()" class="button button-small pull-right">Send</button> -->
 
 
     <ion-infinite-scroll

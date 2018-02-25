@@ -1,6 +1,6 @@
 {
   "name": "ZivisoApp",
-  "app_id": "5b8d1a6a",
+  "app_id": "446e28fd",
   "type": "ionic1",
   "watchPatterns": [
     "scss/**/*",

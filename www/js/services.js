@@ -1,6 +1,6 @@
 angular.module('ziviso.services', []);
 
-  const baseURL = 'http://ziviso.afri-teq.com/';
+  const baseURL = 'https://ziviso.fndtechnologies.com/';
 
   //create auth service
   app.factory('authService', function($http, $httpParamSerializerJQLike, $localStorage){

@@ -51,36 +51,50 @@ app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup,
       }
     }
 
- 
-
-      // $cordovaBadge.hasPermission().then(function(result) {
-      //           $cordovaBadge.set(4);
-      //           console.log('You have permission, boy');
-      //       }, function(error) {
-      //           console.log(error);
-      //       });
-      //////////////////////////////////
-
         if(window.cordova && window.cordova.plugins.Keyboard) {
             cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+
+            //FCMPlugin.getToken( successCallback(token), errorCallback(err) );
+//Keep in mind the function will return null if the token has not been established yet.
+            FCMPlugin.getToken(
+                function (token) {
+                    //alert('Token: ' + token);
+                    console.log('Token: ' + token);
+                    localStorage.setItem("device_token", token);
+                },
+                function (err) {
+                    //alert('error retrieving token: ' + token);
+                    console.log('error retrieving token: ' + err);
+                }
+            );
+
+            FCMPlugin.onNotification(
+                function(data){
+                    if(data.wasTapped){
+            //Notification was received on device tray and tapped by the user.
+                        //alert("Tapped: " +  JSON.stringify(data) );
+                    }else{
+            //Notification was received in foreground. Maybe the user needs to be notified.
+                        //alert("Not tapped: " + JSON.stringify(data) );
+                    }
+                },
+                function(msg){
+                    //alert('onNotification callback successfully registered: ' + msg);
+                    console.log('onNotification callback successfully registered: ' + msg);
+                },
+                function(err){
+                   // alert('Error registering onNotification callback: ' + err);
+                    console.log('Error registering onNotification callback: ' + err);
+                }
+            );
+
+
+
         }
         if(window.StatusBar) {
             StatusBar.styleDefault();
         }  
 
-
-
-  // Check if user is already logged in
-//   firebase.auth().onAuthStateChanged(function(user) {
-
-//     if (user) {
-//         $state.go('app.feed');
-//         console.log('user uid: ' + user.uid);
-//     }
-// });
-
-     // Enable to debug issues.
-  // window.plugins.OneSignal.setLogLevel({logLevel: 4, visualLevel: 4});
   
   var notificationOpenedCallback = function(jsonData) {
     console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
@@ -184,6 +198,16 @@ app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup,
         }
       }
     })
+
+    .state('app.organization-desc', {
+    url: '/organization/:orgId?orgLogo?orgEmail?orgPhone?orgName?orgDesc',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/organization-desc.html',
+        controller: 'OrgDetailCtrl'
+      }
+    }
+  })
 
     .state('app.organization-groups', {
       url: '/organization/:orgId?orgLogo?orgEmail?orgPhone',

@@ -4,7 +4,7 @@ angular.module('ziviso.controllers', []);
 // Login Controller
 
 
-app.controller('LoginCtrl', function($scope, $document, $localStorage, $ionicLoading, authService, $state) {
+app.controller('LoginCtrl', function($scope, $http, $document, $localStorage, $ionicLoading, authService, $state) {
 
  //localStorage.clear();
  console.log(localStorage.getItem('access_token'));
@@ -26,11 +26,38 @@ app.controller('LoginCtrl', function($scope, $document, $localStorage, $ionicLoa
         // localStorage.setItem("access_token", user.access_token);
         if($scope.information.data.access_token !== null && data.status === 200){
 
+             
+
           $ionicLoading.hide();
           $state.go("app.feed");
           localStorage.setItem("access_token", $scope.information.data.access_token);
 
           console.log(data.status);
+
+           const token = localStorage.getItem('access_token');
+    
+            const device_token = localStorage.getItem('device_token');
+
+           //send device token to server
+               $http({
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + token
+                  },
+                url: baseURL+"api/fcm-token",
+                data: JSON.stringify(
+                    {
+                        "token":device_token
+                    }
+                  )
+              }).success(function(data){
+                console.log("Success: " + JSON.stringify(data));
+              }).error(function(data){
+                console.log("Error: " + JSON.stringify(data));
+              });
+
+             /////////////////////////////////////////////
 
         }
 
@@ -175,8 +202,6 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
    
     $log.info('Feed Controller Created');
 
-    const token = localStorage.getItem('access_token');
-
     //function that shows if user has read the message
    
     $scope.read = function(feedId) {
@@ -184,7 +209,7 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
       //This will hide the new badge
       document.getElementById("badge_"+feedId).style.display = 'none'; 
 
-        var link = 'http://ziviso.afri-teq.com/api/messages/'+feedId+'/read';
+        var link = baseURL+'api/messages/'+feedId+'/read';
 
             $http({
             url: link,
@@ -212,7 +237,7 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
 
     const token = localStorage.getItem('access_token');
 
-    $http.get('http://ziviso.afri-teq.com/api/messages', 
+    $http.get(baseURL+'api/messages', 
       { 
         headers: {
           'Content-Type': 'application/json',
@@ -248,7 +273,7 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
         $scope.feeds.splice(index, 1);
 
         //delete the message
-         var link = 'http://ziviso.afri-teq.com/api/messages/'+feedId+'/delete';
+         var link = baseURL+'api/messages/'+feedId+'/delete';
 
             $http({
             url: link,
@@ -326,7 +351,7 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
                template: 'Loading...'
               });
 
-    $http.get('http://ziviso.afri-teq.com/api/clients', 
+    $http.get(baseURL+'api/clients', 
         { 
           headers: {
           'Content-Type': 'application/json',
@@ -401,6 +426,9 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
     $scope.id = $stateParams.orgId;
     $scope.name = $stateParams.orgName;
     $scope.description = $stateParams.orgDesc;
+    $scope.email = $stateParams.orgEmail;
+    $scope.phone = $stateParams.orgPhone;
+    $scope.logo = $stateParams.orgLogo;
 
     $log.info($stateParams.orgId);
 
@@ -413,7 +441,7 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
 
         const token = localStorage.getItem('access_token');
 
-        var link = 'http://ziviso.afri-teq.com/api/groups/'+org_id+'/join';
+        var link = baseURL+'api/groups/'+org_id+'/join';
 
             $ionicLoading.show({
                    template: 'Please Wait...'
@@ -451,7 +479,7 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
 
     const token = localStorage.getItem('access_token');
 
-    $http.get('http://ziviso.afri-teq.com/api/events', 
+    $http.get(baseURL+'api/events', 
       { 
         headers: {
           'Content-Type': 'application/json',

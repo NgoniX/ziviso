@@ -21,7 +21,7 @@
 
     <ion-list>
       
-      <ion-item ng-repeat="org in orgs" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-desc({orgId: org.id, orgLogo: org.logo, orgEmail: org.user.email, orgPhone: org.user.phone, orgName: org.user.name, orgDesc: org.description})'>
+      <ion-item ng-repeat="org in orgs" class="item-thumbnail-left item-icon-right" type="item-text-wrap" ui-sref='app.organization-groups({orgId: org.id, orgLogo: org.logo, orgEmail: org.user.email, orgPhone: org.user.phone})'>
 
         <img src="https://ziviso.fndtechnologies.com/{{ org.logo }}">
         <h2>{{org.user.name}}</h2>

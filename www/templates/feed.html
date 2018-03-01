@@ -29,7 +29,7 @@
       <p ng-bind-html="feed.details | cut:true:50:' ...'"></p>
       <i class="icon ion-chevron-right icon-accessory"></i>
 
-      <ion-option-button class="button-assertive" ng-click="delItem($index, feed.id)">
+      <ion-option-button class="button-assertive" ng-click="delItem(feed, feed.id)">
             <i class = "icon icon ion-trash-a"></i>
       </ion-option-button>
 

@@ -15,6 +15,14 @@ app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup,
    
   $ionicPlatform.ready(function() {
 
+  
+
+  //    $cordovaBadge.clear().then(function() {
+  //   // You have permission, badge cleared.
+  // }, function(err) {
+  //   // You do not have permission.
+  // });
+
   //check if user is already logged in
   var currentUser = authService.isLoggedIn();
       $rootScope.isLoggedIn = false;
@@ -70,12 +78,17 @@ app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup,
 
             FCMPlugin.onNotification(
                 function(data){
+
                     if(data.wasTapped){
             //Notification was received on device tray and tapped by the user.
-                        //alert("Tapped: " +  JSON.stringify(data) );
+
+                      alert("Tapped: " +  JSON.stringify(data) );
+
                     }else{
             //Notification was received in foreground. Maybe the user needs to be notified.
-                        //alert("Not tapped: " + JSON.stringify(data) );
+                        console.log("Not tapped: " + JSON.stringify(data) );
+                    
+                        
                     }
                 },
                 function(msg){
@@ -100,10 +113,6 @@ app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup,
     console.log('notificationOpenedCallback: ' + JSON.stringify(jsonData));
   };
 
-  window.plugins.OneSignal
-    .startInit("5de14675-9994-4c0d-83f4-13b6f7672cec", "21146007526")
-    .handleNotificationOpened(notificationOpenedCallback)
-    .endInit();
     
   // Sync hashed email if you have a login system or collect it.
   //   Will be used to reach the user at the most optimal time of day.
@@ -120,10 +129,11 @@ app.run(function($ionicPlatform, $state, $rootScope, $cordovaBadge, $ionicPopup,
 
     }
     if (window.StatusBar) {
+      StatusBar.hide();
       // org.apache.cordova.statusbar required
-      StatusBar.overlaysWebView( true );
-      StatusBar.backgroundColorByHexString('#0288D1');
-      StatusBar.styleLightContent();
+      // StatusBar.overlaysWebView( true );
+      // StatusBar.backgroundColorByHexString('#0288D1');
+      // StatusBar.styleLightContent();
       //StatusBar.styleDefault();
     }
   });

@@ -7,12 +7,27 @@
         <p><b><font size="5px">{{ name }}</font></b></p>
       </div>
 
-      <a class="item item-icon-left positive" ng-click="joinOrg(id)">
-        <i class="icon ion-ios-personadd"></i>
-        Click here to join group
-      </a>
+      <div ng-show="id!=groupID">  
+            <a class="item item-icon-left positive" ng-click="joinOrg(id)">
+              <i class="icon ion-ios-personadd"></i>
+              Click here to join group
+            </a> 
+      </div> 
+
+      <div ng-show="id==groupID">  
+             <a class="item item-icon-left positive" ng-click="exitOrg(id)">
+              <font color="#F00">
+                <i class="icon ion-android-exit"></i>
+                Click here to exit group
+              </font>
+            </a>  
+      </div> 
+
+      
+
       <div class="item item-text-wrap">
 
+        <!-- <p><h3>This id - {{ id }} : My Group id - {{ groupID }}</h3></p> -->
         <p><h3>{{orgemail}}</h3></p>
         <p><h3>{{orgphone}}</h3></p>
 

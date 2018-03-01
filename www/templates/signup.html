@@ -6,7 +6,7 @@
           <!-- full name -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Full Name</span>
-            <input type="text" ng-model="$parent.userSignup.fullname" name="fullname" placeholder="Full Name" ng-minlength="5" ng-maxlength="50" required>
+            <input type="text" ng-model="$parent.userSignup.fullname" name="fullname" placeholder="Full Name" ng-minlength="2" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.fullname.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
@@ -14,7 +14,7 @@
           <!-- email -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Email</span>
-            <input type="email" ng-model="$parent.userSignup.email" name="email" placeholder="Email" ng-minlength="5" ng-maxlength="50" required>
+            <input type="email" ng-model="$parent.userSignup.email" name="email" placeholder="Email" ng-minlength="2" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.email.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
@@ -22,24 +22,24 @@
           <!-- phone -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Phone</span>
-            <input type="text" ng-model="$parent.userSignup.phone" name="phone" placeholder="Phone" ng-minlength="5" ng-maxlength="50" required>
+            <input type="text" ng-model="$parent.userSignup.phone" name="phone" placeholder="Phone" ng-minlength="2" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.phone.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
 
           <!-- profile -->
-          <label class="item item-input item-floating-label">
+        <!--   <label class="item item-input item-floating-label">
             <span class="input-label">Profile</span>
             <textarea ng-model="$parent.userSignup.profile" name="profile" placeholder="Short description" ng-minlength="5" ng-maxlength="50" required>
             </textarea>
           </label>
           <div ng-messages="form_signup.profile.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
-          </div>
+          </div> -->
           
           <!-- username -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Username</span>
-            <input type="text" ng-model="$parent.userSignup.username" name="username" placeholder="Username" ng-minlength="5" ng-maxlength="50" required>
+            <input type="text" ng-model="$parent.userSignup.username" name="username" placeholder="Username" ng-minlength="2" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.username.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
@@ -47,7 +47,7 @@
           <!-- password -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Password</span>
-            <input type="password" ng-model="$parent.userSignup.password" name="password" placeholder="Password" ng-minlength="5" ng-maxlength="50" required>
+            <input type="password" ng-model="$parent.userSignup.password" name="password" placeholder="Password" ng-minlength="2" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.password.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
@@ -55,7 +55,7 @@
           <!-- confirm password -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Confirm Password</span>
-            <input type="password" ng-model="$parent.userSignup.password_confirmation" ng-pattern="$parent.userSignup.password" name="password_confirmation" placeholder="Confirm Password" ng-minlength="5" ng-maxlength="50" required>
+            <input type="password" ng-model="$parent.userSignup.password_confirmation" ng-pattern="$parent.userSignup.password" name="password_confirmation" placeholder="Confirm Password" ng-minlength="2" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.password_confirmation.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>
@@ -63,7 +63,7 @@
           <!-- country -->
           <label class="item item-input item-floating-label">
             <span class="input-label">Country</span>
-            <input type="text" ng-model="$parent.userSignup.country" name="country" placeholder="Country" ng-minlength="5" ng-maxlength="50" required>
+            <input type="text" ng-model="$parent.userSignup.country" name="country" placeholder="Country" ng-minlength="2" ng-maxlength="50" required>
           </label>
           <div ng-messages="form_signup.country.$error" ng-messages-include="templates/error-messages.html" class="form-errors">
           </div>

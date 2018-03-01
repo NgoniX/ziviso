@@ -1,13 +1,14 @@
 angular.module('ziviso.controllers', []);
-
-
+    
 // Login Controller
 
 
-app.controller('LoginCtrl', function($scope, $http, $document, $localStorage, $ionicLoading, authService, $state) {
+app.controller('LoginCtrl', function($scope, $timeout, $http, $document, $localStorage, $ionicLoading, authService, $state) {
 
  //localStorage.clear();
- console.log(localStorage.getItem('access_token'));
+ //console.log(localStorage.getItem('access_token'));
+
+ const device_token = localStorage.getItem('device_token');
   // Perform the login action when the user submits the login form
   $scope.doLogin = function(userLogin) {
     
@@ -26,19 +27,16 @@ app.controller('LoginCtrl', function($scope, $http, $document, $localStorage, $i
         // localStorage.setItem("access_token", user.access_token);
         if($scope.information.data.access_token !== null && data.status === 200){
 
-             
-
           $ionicLoading.hide();
           $state.go("app.feed");
           localStorage.setItem("access_token", $scope.information.data.access_token);
 
+         const token = localStorage.getItem('access_token');
+
           console.log(data.status);
 
-           const token = localStorage.getItem('access_token');
-    
-            const device_token = localStorage.getItem('device_token');
-
            //send device token to server
+           $timeout(function(){
                $http({
                 method: "POST",
                 headers: {
@@ -57,6 +55,7 @@ app.controller('LoginCtrl', function($scope, $http, $document, $localStorage, $i
                 console.log("Error: " + JSON.stringify(data));
               });
 
+              });
              /////////////////////////////////////////////
 
         }
@@ -171,8 +170,8 @@ $scope.doSignup = function(userSignup) {
       });
 
       authService.signup(userSignup.fullname, userSignup.email, userSignup.phone, 
-        userSignup.profile, userSignup.username, userSignup.password, 
-        userSignup.password_confirmation, userSignup.country).then((data) => {
+        userSignup.username, userSignup.password, userSignup.password_confirmation, userSignup.country)
+      .then((data) => {
 
           $ionicLoading.hide();
           alert('Sign Up Successful. Please check your email to confirm');
@@ -198,9 +197,11 @@ $scope.doSignup = function(userSignup) {
 ///
 ///
 
-app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log, $window, $ionicPopup, $filter, $ionicLoading, $http, FeedData, $ionicFilterBar, $cordovaNetwork) {
+app.controller('FeedCtrl', function ($scope, $ionicListDelegate, $localStorage, $ionicHistory, $log, $window, $ionicPopup, $filter, $ionicLoading, $http, FeedData, $ionicFilterBar, $cordovaNetwork) {
    
     $log.info('Feed Controller Created');
+
+    const token = localStorage.getItem('access_token');
 
     //function that shows if user has read the message
    
@@ -268,9 +269,10 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
 
 
     //remove list item from feed
-    $scope.delItem = function(index, feedId){
+    $scope.delItem = function(feed, feedId){
 
-        $scope.feeds.splice(index, 1);
+        $scope.feeds.splice($scope.feeds.indexOf(feed), 1);
+        $ionicListDelegate.closeOptionButtons();
 
         //delete the message
          var link = baseURL+'api/messages/'+feedId+'/delete';
@@ -347,11 +349,15 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
 
     const token = localStorage.getItem('access_token');
 
-    $ionicLoading.show({
+    //get all organisations or my organisations
+
+    $scope.getOrganizations = function(param) {
+
+      $ionicLoading.show({
                template: 'Loading...'
               });
 
-    $http.get(baseURL+'api/clients', 
+      $http.get(baseURL+param, 
         { 
           headers: {
           'Content-Type': 'application/json',
@@ -359,7 +365,9 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
         }
       }).success(function (data, headers, config) {
         OrgData.initData(data);
+
         $scope.orgs = OrgData.getOrgs();
+        
         //get groups within client
         $scope.grps = OrgData.getOrg($stateParams.orgId);
         //get organization logo
@@ -368,11 +376,11 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
         $rootScope.orgemail = $stateParams.orgEmail;
         //get organization phone
         $rootScope.orgphone = $stateParams.orgPhone;
+
         window.localStorage.setItem("orgs", JSON.stringify(data));
         $ionicLoading.hide();
         $log.info('data saved 1st org');
-        $log.info($stateParams.orgLogo);
-
+        
       })
       .error(function (data, headers, config) {
        // $log.info('error' + data);
@@ -383,25 +391,36 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
 
       });
 
+    }
+    /////////////////////////////////////////////////////////////////////////
+
+      // get all organisation
+      $scope.getOrganizations('api/clients');
+
       $scope.selectedAll = true;
       $scope.selectedMy = false;
       //show selected value from select dropdown
       $scope.showSelectValue = function(mySelect) {
 
+        //my organisations
         if(mySelect == "My Organizations"){
 
           $scope.selectedAll = false;
           $scope.selectedMy = true;
+               
+          $scope.getOrganizations('api/clients/my');
 
-      }
+         }
 
-      else {
+         //all organizations
+        else {
 
           $scope.selectedAll = true;
           $scope.selectedMy = false;
 
+          $scope.getOrganizations('api/clients');
 
-      }
+         }
 
        console.log(mySelect);
      }
@@ -416,11 +435,15 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
       });
     };
 
+
   });
 
 
-  app.controller('OrgDetailCtrl', function ($scope, $ionicLoading, $stateParams, $http, $log, OrgData, $filter) {
+  app.controller('OrgDetailCtrl', function ($scope, $rootScope, $ionicLoading, $stateParams, $http, $log, OrgData, $filter) {
     $log.info('Org Detail Controller Created');
+
+    const token = localStorage.getItem('access_token');
+
     $scope.org = OrgData.getOrg($stateParams.orgId);
 
     $scope.id = $stateParams.orgId;
@@ -428,18 +451,55 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
     $scope.description = $stateParams.orgDesc;
     $scope.email = $stateParams.orgEmail;
     $scope.phone = $stateParams.orgPhone;
-    $scope.logo = $stateParams.orgLogo;
+    $rootScope.logo = $stateParams.orgLogo;
 
     $log.info($stateParams.orgId);
+
+    // get group info
+    $scope.getGroupInfo = function(){
+
+      $http.get(baseURL+'api/groups', 
+        { 
+          headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + token
+        }
+      }).success(function (data, headers, config) {
+
+        $scope.data = data;
+
+        angular.forEach($scope.data, function(value, key){
+
+          $scope.groupID = value.id;
+          $scope.logo = $rootScope.logo;
+
+           $log.info('Group info is '+ JSON.stringify(value.id));
+  
+         });
+
+        $log.info('Logo is: '+ $rootScope.logo);
+        
+      })
+      .error(function (data, headers, config) {
+       $log.info('error' + data);
+     
+
+      });
+
+    }
+
+    $scope.getGroupInfo();
+
+    // $log.info('Client group id: '+$scope.description);
 
     // insert data into subscribers table when user clicks join org
 
       // var date = new Date();
       // var curdate = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
 
+      //join group
       $scope.joinOrg = function(org_id){
 
-        const token = localStorage.getItem('access_token');
 
         var link = baseURL+'api/groups/'+org_id+'/join';
 
@@ -465,6 +525,35 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
             });
 
         };
+
+        //exit group
+      $scope.exitOrg = function(org_id){
+
+
+        var link = baseURL+'api/groups/'+org_id+'/exit';
+
+            $ionicLoading.show({
+                   template: 'Please Wait...'
+            });
+
+            $http({
+            url: link,
+            method: "POST",
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+            }).then(function (data, status, headers, config){
+
+              $ionicLoading.hide();
+               alert('You have exited the group');
+               $log.info('you have exited organisation!');
+
+            }, function (data, status, headers, config) {
+            $ionicLoading.hide();
+             $log.info('error: ' + data);
+            });
+
+        };
      
 
   });
@@ -472,12 +561,12 @@ app.controller('FeedCtrl', function ($scope, $localStorage, $ionicHistory, $log,
 
   app.controller('CalendarCtrl', function ($scope, Events, $ionicFilterBar, $ionicLoading, $log, $http, $cordovaCalendar) {
     
+    const token = localStorage.getItem('access_token');
+
     $ionicLoading.show({
                template: 'Loading...'
               });
    
-
-    const token = localStorage.getItem('access_token');
 
     $http.get(baseURL+'api/events', 
       { 
